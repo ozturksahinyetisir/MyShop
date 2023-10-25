@@ -20,14 +20,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,14 +38,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
+import com.ozturksahinyetisir.myshop.R
 import com.ozturksahinyetisir.myshop.data.model.ShopModel
 import com.ozturksahinyetisir.myshop.montserratFontFamily
 import com.ozturksahinyetisir.myshop.presentation.home.ui.theme.MyShopTheme
@@ -65,7 +61,6 @@ class ViewProducts : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     Column {
-                        //AdminPanel()
                         Spacer(modifier = Modifier.height(6.dp))
                         readDataFromDatabase(LocalContext.current)
                         MyScreen()
@@ -145,7 +140,7 @@ fun ShowList(context: Context) {
                     Text(
                         text = "Fiyati : " + productList[index].productPrice,
                         modifier = Modifier.padding(4.dp),
-                        color = Color(0xFF136804),
+                        color = colorResource(id = R.color.dark_green),
                         textAlign = TextAlign.Center,
                         fontFamily = montserratFontFamily,
                         fontWeight = FontWeight.Bold
@@ -194,9 +189,8 @@ fun AdminPanel() {
 @Composable
 fun MyScreen() {
     var showDialog by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf(TextFieldValue()) }
     var password by remember { mutableStateOf("") }
-
+    var context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Bottom,
@@ -209,56 +203,50 @@ fun MyScreen() {
             Text("Admin Paneline Git!")
         }
         if (showDialog) {
-            Dialog(
+            AlertDialog(
                 onDismissRequest = { showDialog = false },
-                properties = DialogProperties(dismissOnClickOutside = true)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text("Admin Paneli için şifre girin.")
-                        IconButton(onClick = { showDialog = false }) {
-                            Icon(imageVector = Icons.Default.Close, contentDescription = null)
-                        }
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            var context = LocalContext.current
-                            TextField(
-                                value = password,
-                                onValueChange = {
-                                    if (it.length <= 4) { // The maximum length of the password can be up to 4.
-                                        password = it
-                                        password = it.replace(" ", "") //Suppresses line breaks
-                                    }
-                                },
-                                label = { Text("Şifre", fontFamily = montserratFontFamily,) },
-                                visualTransformation = PasswordVisualTransformation(),
-
-                                )
-                            Button(onClick = {
-                                if(password.equals("7777")) {
-                                    Toast.makeText(context,"Giriş Başarılı!",Toast.LENGTH_SHORT).show()
-                                    val intent = Intent(context, HomeActivity::class.java)
-                                    context.startActivity(intent)
-                                }else{
-                                    Toast.makeText(context,"Şifre Hatalı!",Toast.LENGTH_SHORT).show()
-                                }
-                            }, colors = ButtonDefaults.buttonColors(Color.Blue)) {
-                                Text("Giriş Yap")
+                title = { Text("Şifre girin.") },
+                text = {
+                    TextField(
+                        value = password,
+                        onValueChange = {
+                            if (it.length <= 4) {
+                                password = it
+                                password = it.replace(" ", "")
                             }
+                        },
+                        label = { Text("Şifre") },
+                        visualTransformation = PasswordVisualTransformation()
+                    )
+                },
+                confirmButton = {
+                    Button(onClick = {
+                        if (password == "7777") {
+                            Toast.makeText(context, "Giriş Başarılı!", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(context, HomeActivity::class.java)
+                            context.startActivity(intent)
+                        } else {
+                            Toast.makeText(context, "Şifre Hatalı!", Toast.LENGTH_SHORT).show()
                         }
+                        showDialog = false
+                    },colors = ButtonDefaults.buttonColors(colorResource(id = R.color.dark_green))) {
+                        Text("Giriş Yap")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            showDialog = false
+                            password = ""
+                        },colors = ButtonDefaults.buttonColors(Color.Red)
+                    ) {
+                        Text("Vazgeç")
                     }
                 }
-            }
+            )
         }
     }
 }
+
+
 

@@ -56,7 +56,6 @@ class HomeActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                         addDataToDatabase(LocalContext.current)
-
                 }
             }
         }
