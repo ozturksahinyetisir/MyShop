@@ -9,6 +9,9 @@
 - [Coil Compose](https://coil-kt.github.io/coil/compose/)
 - [Check API Levels](https://apilevels.com/) Also you can see cumulative usage.
 
+
+## GIF of APP
+
 <p align="center"
   </br><img src="https://github.com/ozturksahinyetisir/MyShop/blob/main/screenshots/MyShop.gif" width="40%">
   </p>
